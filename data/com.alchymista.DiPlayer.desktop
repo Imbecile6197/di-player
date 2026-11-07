@@ -1,0 +1,12 @@
+[Desktop Entry]
+Name=DI Player
+GenericName=Internet Radio
+Comment=Native GNOME player for DI.fm premium radio
+Exec=di_player
+Icon=com.alchymista.DiPlayer
+Terminal=false
+Type=Application
+Categories=AudioVideo;Audio;Player;Tuner;
+Keywords=radio;di.fm;digitally;imported;electronic;
+StartupNotify=true
+StartupWMClass=com.alchymista.DiPlayer

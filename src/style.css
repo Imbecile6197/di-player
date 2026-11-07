@@ -1,0 +1,126 @@
+/* DI Player — neon club night theme, Adwaita-compatible */
+
+window.di-player {
+  background: linear-gradient(165deg, #07111f 0%, #0b1a2e 42%, #101828 100%);
+}
+
+.di-hero {
+  background: linear-gradient(
+    120deg,
+    rgba(0, 212, 255, 0.18) 0%,
+    rgba(255, 45, 149, 0.12) 48%,
+    rgba(124, 58, 237, 0.10) 100%
+  );
+  border-radius: 18px;
+  padding: 18px;
+  border: 1px solid rgba(0, 229, 255, 0.22);
+}
+
+.di-brand {
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: 0.04em;
+  color: #7ef9ff;
+  text-shadow: 0 0 18px rgba(0, 229, 255, 0.45);
+}
+
+.di-now-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f5fbff;
+}
+
+.di-now-artist {
+  font-size: 0.95rem;
+  color: #9ec9d8;
+}
+
+.di-channel-name {
+  font-weight: 700;
+  color: #eaf7ff;
+}
+
+.di-channel-desc {
+  color: #8fb3c4;
+  font-size: 0.82rem;
+}
+
+.di-chip {
+  background: rgba(0, 229, 255, 0.12);
+  color: #9af4ff;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  font-weight: 600;
+}
+
+.di-channel-row {
+  padding: 10px 12px;
+  border-radius: 14px;
+  margin: 2px 6px;
+  transition: background 120ms ease;
+}
+
+.di-channel-row:hover {
+  background: rgba(0, 229, 255, 0.08);
+}
+
+.di-channel-row.playing {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 229, 255, 0.18),
+    rgba(255, 45, 149, 0.10)
+  );
+  border: 1px solid rgba(0, 229, 255, 0.28);
+}
+
+.di-cover {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+}
+
+.di-cover-sm {
+  border-radius: 10px;
+}
+
+.di-play-btn {
+  min-width: 48px;
+  min-height: 48px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #00d4ff, #7c3aed);
+  color: white;
+  font-weight: 700;
+}
+
+.di-play-btn:hover {
+  background: linear-gradient(135deg, #5cefff, #9b5cff);
+}
+
+.di-accent-label {
+  color: #00e5ff;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.di-status-dot {
+  min-width: 8px;
+  min-height: 8px;
+  border-radius: 999px;
+  background: #00e5ff;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.8);
+}
+
+.di-status-dot.offline {
+  background: #ff2d95;
+  box-shadow: 0 0 10px rgba(255, 45, 149, 0.7);
+}
+
+.di-sidebar {
+  background: rgba(7, 17, 31, 0.55);
+}
+
+.di-toolbar {
+  background: transparent;
+}
