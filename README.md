@@ -18,11 +18,11 @@ Native GNOME (GTK4 + libadwaita) internet radio player for [DI.fm](https://www.d
 ### One-liner from this repository
 
 ```bash
-git clone https://github.com/<USER>/di-player.git
+git clone https://github.com/Imbecile6197/di-player.git
 cd di-player
-chmod +x scripts/install.sh
 ./scripts/install.sh --deps
 ```
+
 
 `--deps` installs build packages with `sudo` (Fedora `dnf` or Ubuntu `apt`), then builds a release binary into `~/.local/bin/di_player` and registers the desktop entry + icons.
 
