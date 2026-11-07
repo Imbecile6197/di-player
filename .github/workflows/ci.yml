@@ -1,0 +1,95 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+  release:
+    types: [published]
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  ubuntu:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            name: ubuntu
+          - os: ubuntu-22.04
+            name: ubuntu-22
+    name: ubuntu (${{ matrix.name }})
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential pkg-config libssl-dev \
+            libgtk-4-dev libadwaita-1-dev mpv
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo test --locked
+      - run: cargo build --release --locked
+      - name: Package
+        run: |
+          stage=di-player-${{ matrix.name }}
+          mkdir -p "$stage"/{bin,share/applications,share/icons/hicolor/scalable/apps,share/icons/hicolor/128x128/apps,scripts}
+          cp target/release/di_player "$stage/bin/"
+          cp resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg "$stage/share/icons/hicolor/scalable/apps/"
+          cp resources/icons/hicolor/128x128/apps/com.alchymista.DiPlayer.png "$stage/share/icons/hicolor/128x128/apps/"
+          sed 's|^Exec=.*|Exec=di_player|; s|^Icon=.*|Icon=com.alchymista.DiPlayer|' \
+            data/com.alchymista.DiPlayer.desktop > "$stage/share/applications/com.alchymista.DiPlayer.desktop"
+          cp scripts/install.sh README.md LICENSE "$stage/"
+          tar -czf "di-player-${{ matrix.name }}.tar.gz" "$stage"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: di-player-${{ matrix.name }}
+          path: di-player-${{ matrix.name }}.tar.gz
+
+  fedora:
+    name: fedora
+    runs-on: ubuntu-24.04
+    container: fedora:41
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          dnf install -y gcc pkgconf-pkg-config openssl-devel \
+            gtk4-devel libadwaita-devel mpv cargo rust git
+      - run: cargo test --locked
+      - run: cargo build --release --locked
+      - name: Package
+        run: |
+          stage=di-player-fedora
+          mkdir -p "$stage"/{bin,share/applications,share/icons/hicolor/scalable/apps,share/icons/hicolor/128x128/apps,scripts}
+          cp target/release/di_player "$stage/bin/"
+          cp resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg "$stage/share/icons/hicolor/scalable/apps/"
+          cp resources/icons/hicolor/128x128/apps/com.alchymista.DiPlayer.png "$stage/share/icons/hicolor/128x128/apps/"
+          sed 's|^Exec=.*|Exec=di_player|; s|^Icon=.*|Icon=com.alchymista.DiPlayer|' \
+            data/com.alchymista.DiPlayer.desktop > "$stage/share/applications/com.alchymista.DiPlayer.desktop"
+          cp scripts/install.sh README.md LICENSE "$stage/"
+          tar -czf di-player-fedora.tar.gz "$stage"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: di-player-fedora
+          path: di-player-fedora.tar.gz
+
+  release-assets:
+    if: github.event_name == 'release'
+    needs: [ubuntu, fedora]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+      - name: Upload to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            di-player-ubuntu/di-player-ubuntu.tar.gz
+            di-player-ubuntu-22/di-player-ubuntu-22.tar.gz
+            di-player-fedora/di-player-fedora.tar.gz

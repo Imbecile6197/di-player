@@ -1,0 +1,14 @@
+/target/
+**/*.rs.bk
+*.swp
+*.tmp
+.DS_Store
+.idea/
+.vscode/
+*.AppImage
+dist/
+debian/files
+debian/.debhelper/
+debian/di-player/
+*.deb
+*.rpm
