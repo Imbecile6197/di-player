@@ -12,3 +12,5 @@ debian/.debhelper/
 debian/di-player/
 *.deb
 *.rpm
+target-ubuntu/
+/dist/
