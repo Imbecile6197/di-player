@@ -2,7 +2,41 @@
 
 Native GNOME (GTK4 + libadwaita) internet radio player for [DI.fm](https://www.di.fm) premium accounts.
 
-![License](https://img.shields.io/badge/license-GPL--3.0-blue)
+## Install from packages (recommended)
+
+Download the latest release assets from  
+**https://github.com/Imbecile6197/di-player/releases**
+
+### Fedora
+
+```bash
+sudo dnf install ./di-player-0.1.0-1.fc45.x86_64.rpm
+# runtime deps pulled automatically: gtk4, libadwaita, mpv
+di_player
+```
+
+### Ubuntu (25.04+)
+
+```bash
+sudo apt update
+sudo apt install ./di-player_0.1.0_amd64.deb
+# or: sudo apt install ./di-player_0.1.0_amd64.deb mpv
+di_player
+```
+
+> The `.deb` is built on Ubuntu 25.04 (libadwaita ≥ 1.6, glibc 2.39).  
+> For Ubuntu 24.04 or older, use the source install below.
+
+### Build from source (Fedora / Ubuntu)
+
+```bash
+git clone https://github.com/Imbecile6197/di-player.git
+cd di-player
+./scripts/install.sh --deps
+```
+
+`--deps` installs build packages with `sudo`, builds a release binary into
+`~/.local/bin/di_player`, and registers the desktop entry + icons.
 
 ## Features
 
@@ -13,66 +47,23 @@ Native GNOME (GTK4 + libadwaita) internet radio player for [DI.fm](https://www.d
 - StatusNotifierItem system tray (show/hide, play/pause, stop, quit)
 - Close-to-tray; credentials stored in `~/.config/di-player/`
 
-## Install (Fedora / Ubuntu)
-
-### One-liner from this repository
-
-```bash
-git clone https://github.com/Imbecile6197/di-player.git
-cd di-player
-./scripts/install.sh --deps
-```
-
-
-`--deps` installs build packages with `sudo` (Fedora `dnf` or Ubuntu `apt`), then builds a release binary into `~/.local/bin/di_player` and registers the desktop entry + icons.
-
-Afterwards run:
-
-```bash
-di_player
-```
-
-Or find **DI Player** in the app menu.
-
-### Manual dependencies
-
-**Fedora**
-
-```bash
-sudo dnf install gcc pkgconf-pkg-config openssl-devel \
-  gtk4-devel libadwaita-devel mpv cargo rust
-```
-
-**Ubuntu / Debian**
-
-```bash
-sudo apt update
-sudo apt install build-essential pkg-config libssl-dev \
-  libgtk-4-dev libadwaita-1-dev mpv cargo rustc
-```
-
-Then:
-
-```bash
-cargo build --release
-./scripts/install.sh
-# or: make install
-```
-
-### Uninstall
-
-```bash
-make uninstall
-```
-
 ## System tray (GNOME)
 
-Enable the **AppIndicator and KStatusNotifierItem** extension (Fedora package `gnome-shell-extension-appindicator`).
+Enable the **AppIndicator and KStatusNotifierItem** extension  
+(Fedora: `sudo dnf install gnome-shell-extension-appindicator`).
 
 ## Login
 
 1. Sign in with your DI.fm premium email and password, **or**
 2. Paste the listen key from DI.fm → Member settings → Hardware player.
+
+## Packaging (maintainers)
+
+```bash
+# Fedora .rpm + Ubuntu .deb (needs podman)
+./scripts/build-packages.sh
+# artifacts land in dist/
+```
 
 ## Development
 
@@ -80,6 +71,7 @@ Enable the **AppIndicator and KStatusNotifierItem** extension (Fedora package `g
 cargo run
 cargo test
 make release
+make uninstall   # remove ~/.local install
 ```
 
 ## License
