@@ -2,41 +2,53 @@
 
 Native GNOME (GTK4 + libadwaita) internet radio player for [DI.fm](https://www.di.fm) premium accounts.
 
-## Install from packages (recommended)
-
-Download the latest release assets from  
-**https://github.com/Imbecile6197/di-player/releases**
+## Add package source & install
 
 ### Fedora
 
 ```bash
-sudo dnf install ./di-player-0.1.0-1.fc45.x86_64.rpm
-# runtime deps pulled automatically: gtk4, libadwaita, mpv
-di_player
+curl -fsSL https://imbecile6197.github.io/di-player/add-repo-fedora.sh | sudo bash
+sudo dnf install di-player
 ```
 
-### Ubuntu (25.04+)
+Or manually:
 
 ```bash
-sudo apt update
-sudo apt install ./di-player_0.1.0_amd64.deb
-# or: sudo apt install ./di-player_0.1.0_amd64.deb mpv
-di_player
+sudo curl -fsSL https://imbecile6197.github.io/di-player/di-player.repo \
+  -o /etc/yum.repos.d/di-player.repo
+sudo dnf install di-player
 ```
 
-> The `.deb` is built on Ubuntu 25.04 (libadwaita ≥ 1.6, glibc 2.39).  
-> For Ubuntu 24.04 or older, use the source install below.
+### Ubuntu
 
-### Build from source (Fedora / Ubuntu)
+```bash
+curl -fsSL https://imbecile6197.github.io/di-player/add-repo-ubuntu.sh | sudo bash
+sudo apt install di-player
+```
+
+Or manually:
+
+```bash
+echo 'deb [trusted=yes arch=amd64] https://imbecile6197.github.io/di-player/deb stable main' \
+  | sudo tee /etc/apt/sources.list.d/di-player.list
+sudo apt update
+sudo apt install di-player
+```
+
+> Ubuntu packages need **25.04+** (libadwaita ≥ 1.6). On older Ubuntu use source install below.
+
+Then run `di_player` or open **DI Player** from the app menu.
+
+Package repo / releases:  
+https://imbecile6197.github.io/di-player/ · https://github.com/Imbecile6197/di-player/releases
+
+## Build from source
 
 ```bash
 git clone https://github.com/Imbecile6197/di-player.git
 cd di-player
 ./scripts/install.sh --deps
 ```
-
-`--deps` installs build packages with `sudo`, builds a release binary into
-`~/.local/bin/di_player`, and registers the desktop entry + icons.
 
 ## Features
 
@@ -45,33 +57,23 @@ cd di-player
 - Now-playing metadata
 - mpv-backed streaming (premium 320 kbps MP3)
 - StatusNotifierItem system tray (show/hide, play/pause, stop, quit)
-- Close-to-tray; credentials stored in `~/.config/di-player/`
+- Close-to-tray; credentials in `~/.config/di-player/`
 
 ## System tray (GNOME)
 
-Enable the **AppIndicator and KStatusNotifierItem** extension  
-(Fedora: `sudo dnf install gnome-shell-extension-appindicator`).
+Enable **AppIndicator and KStatusNotifierItem**  
+(`sudo dnf install gnome-shell-extension-appindicator` on Fedora).
 
 ## Login
 
-1. Sign in with your DI.fm premium email and password, **or**
-2. Paste the listen key from DI.fm → Member settings → Hardware player.
+1. DI.fm premium email/password, **or**
+2. Listen key from DI.fm → Member settings → Hardware player.
 
-## Packaging (maintainers)
-
-```bash
-# Fedora .rpm + Ubuntu .deb (needs podman)
-./scripts/build-packages.sh
-# artifacts land in dist/
-```
-
-## Development
+## Maintainers
 
 ```bash
-cargo run
-cargo test
-make release
-make uninstall   # remove ~/.local install
+./scripts/build-packages.sh      # dist/*.rpm + dist/*.deb
+./scripts/publish-pages-repo.sh  # site/ for GitHub Pages
 ```
 
 ## License
