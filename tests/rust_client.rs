@@ -1,5 +1,6 @@
 use di_player::api::DiClient;
 use di_player::config::{clear_credentials, load_credentials, save_credentials, Credentials};
+use di_player::quality::StreamQuality;
 
 #[test]
 fn client_loads_channels_and_filters() {
@@ -59,4 +60,21 @@ fn resolve_playlist_without_key_still_parses_pls() {
         )
         .expect("pls resolve");
     assert!(url.contains("di.fm"), "{url}");
+}
+
+#[test]
+fn all_premium_qualities_have_playlists() {
+    let client = DiClient::new().unwrap();
+    for quality in StreamQuality::ALL {
+        let list = client
+            .stream_channels(quality.api_key())
+            .unwrap_or_else(|e| panic!("{}: {e}", quality.api_key()));
+        assert!(
+            list.len() > 20,
+            "{} returned only {} channels",
+            quality.api_key(),
+            list.len()
+        );
+        assert!(list.iter().any(|c| c.key == "trance"));
+    }
 }

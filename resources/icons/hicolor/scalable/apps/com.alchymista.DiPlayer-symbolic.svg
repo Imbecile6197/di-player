@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+  <!-- Symbolic mono Di — recolored by the desktop -->
+  <path fill="#ffffff"
+        d="M2.2 2.4h2.5c2.55 0 4.2 1.45 4.2 3.95S7.25 10.3 4.7 10.3H2.2V2.4zm1.85 1.55v4.8h.65c1.4 0 2.25-.85 2.25-2.4s-.85-2.4-2.25-2.4h-.65z"/>
+  <rect x="10.5" y="5.35" width="1.7" height="4.95" rx="0.35" fill="#ffffff"/>
+  <rect x="10.5" y="2.4" width="1.7" height="1.7" rx="0.35" fill="#ffffff"/>
+</svg>

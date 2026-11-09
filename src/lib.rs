@@ -1,5 +1,10 @@
 pub mod api;
 pub mod config;
+pub mod cover_fx;
+pub mod i18n;
 pub mod icons;
 pub mod player;
+pub mod quality;
+pub mod theme;
 pub mod tray;
+pub mod visualizer;

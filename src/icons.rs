@@ -8,65 +8,49 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 
 pub const APP_ICON_NAME: &str = "com.alchymista.DiPlayer";
+/// Monochrome symbolic icon used in the system tray.
+pub const TRAY_ICON_NAME: &str = "com.alchymista.DiPlayer-symbolic";
 
 const ICON_SVG: &[u8] =
     include_bytes!("../resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg");
+const ICON_SYMBOLIC_SVG: &[u8] =
+    include_bytes!("../resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg");
+
 const ICON_PNG_16: &[u8] =
     include_bytes!("../resources/icons/hicolor/16x16/apps/com.alchymista.DiPlayer.png");
+const ICON_PNG_22: &[u8] =
+    include_bytes!("../resources/icons/hicolor/22x22/apps/com.alchymista.DiPlayer.png");
+const ICON_PNG_24: &[u8] =
+    include_bytes!("../resources/icons/hicolor/24x24/apps/com.alchymista.DiPlayer.png");
 const ICON_PNG_32: &[u8] =
     include_bytes!("../resources/icons/hicolor/32x32/apps/com.alchymista.DiPlayer.png");
 const ICON_PNG_48: &[u8] =
     include_bytes!("../resources/icons/hicolor/48x48/apps/com.alchymista.DiPlayer.png");
 const ICON_PNG_64: &[u8] =
     include_bytes!("../resources/icons/hicolor/64x64/apps/com.alchymista.DiPlayer.png");
+const ICON_PNG_96: &[u8] =
+    include_bytes!("../resources/icons/hicolor/96x96/apps/com.alchymista.DiPlayer.png");
 const ICON_PNG_128: &[u8] =
     include_bytes!("../resources/icons/hicolor/128x128/apps/com.alchymista.DiPlayer.png");
 const ICON_PNG_256: &[u8] =
     include_bytes!("../resources/icons/hicolor/256x256/apps/com.alchymista.DiPlayer.png");
+const ICON_PNG_512: &[u8] =
+    include_bytes!("../resources/icons/hicolor/512x512/apps/com.alchymista.DiPlayer.png");
+const ICON_SYMBOLIC_PNG_64: &[u8] =
+    include_bytes!("../resources/icons/hicolor/64x64/apps/com.alchymista.DiPlayer-symbolic.png");
 
-const HICOLOR_INDEX_THEME: &str = r#"[Icon Theme]
-Name=Hicolor
-Comment=Fallback icon theme
-Hidden=true
-Directories=16x16/apps,32x32/apps,48x48/apps,64x64/apps,128x128/apps,256x256/apps,scalable/apps
-
-[16x16/apps]
-Size=16
-Context=Applications
-Type=Fixed
-
-[32x32/apps]
-Size=32
-Context=Applications
-Type=Fixed
-
-[48x48/apps]
-Size=48
-Context=Applications
-Type=Fixed
-
-[64x64/apps]
-Size=64
-Context=Applications
-Type=Fixed
-
-[128x128/apps]
-Size=128
-Context=Applications
-Type=Fixed
-
-[256x256/apps]
-Size=256
-Context=Applications
-Type=Fixed
-
-[scalable/apps]
-Size=128
-Context=Applications
-Type=Scalable
-MinSize=16
-MaxSize=512
-"#;
+const APP_PNG_SIZES: &[(u16, &[u8])] = &[
+    (16, ICON_PNG_16),
+    (22, ICON_PNG_22),
+    (24, ICON_PNG_24),
+    (32, ICON_PNG_32),
+    (48, ICON_PNG_48),
+    (64, ICON_PNG_64),
+    (96, ICON_PNG_96),
+    (128, ICON_PNG_128),
+    (256, ICON_PNG_256),
+    (512, ICON_PNG_512),
+];
 
 /// Directory that StatusNotifier hosts should add to the icon theme search path.
 pub fn tray_icon_theme_path() -> PathBuf {
@@ -104,31 +88,50 @@ fn png_name(dir: &Path) -> PathBuf {
 }
 
 /// Install icons for GTK, the desktop entry, and the system tray.
+///
+/// Writes only app icon files under `~/.local/share/icons/hicolor/.../apps/`.
+/// Never writes `index.theme` — a partial user hicolor index shadows the system
+/// one and breaks other apps' bundled action icons (e.g. PinkSky).
 pub fn install_user_icons() {
     let hicolor = hicolor_root();
-    write_file(hicolor.join("index.theme").as_path(), HICOLOR_INDEX_THEME.as_bytes());
     write_file(
         &hicolor
             .join("scalable/apps")
             .join(format!("{APP_ICON_NAME}.svg")),
         ICON_SVG,
     );
-    write_file(&png_name(&hicolor.join("16x16/apps")), ICON_PNG_16);
-    write_file(&png_name(&hicolor.join("32x32/apps")), ICON_PNG_32);
-    write_file(&png_name(&hicolor.join("48x48/apps")), ICON_PNG_48);
-    write_file(&png_name(&hicolor.join("64x64/apps")), ICON_PNG_64);
-    write_file(&png_name(&hicolor.join("128x128/apps")), ICON_PNG_128);
-    write_file(&png_name(&hicolor.join("256x256/apps")), ICON_PNG_256);
+
+    // Write every common size — GNOME Shell prefers large PNGs (256/512) when present.
+    // Leaving stale oversized files behind keeps the old colourful mark in the app grid.
+    for (size, bytes) in APP_PNG_SIZES {
+        write_file(
+            &png_name(&hicolor.join(format!("{size}x{size}/apps"))),
+            bytes,
+        );
+    }
+
+    // Symbolic (monochrome) icons for status area / AppIndicator.
+    write_file(
+        &hicolor
+            .join("scalable/apps")
+            .join(format!("{TRAY_ICON_NAME}.svg")),
+        ICON_SYMBOLIC_SVG,
+    );
+    write_file(
+        &hicolor
+            .join("64x64/apps")
+            .join(format!("{TRAY_ICON_NAME}.png")),
+        ICON_SYMBOLIC_PNG_64,
+    );
 
     // Flat tray directory — AppIndicator resolves IconName via IconThemePath.
     let tray = tray_icon_theme_path();
+    write_file(&tray.join(format!("{TRAY_ICON_NAME}.png")), ICON_SYMBOLIC_PNG_64);
+    write_file(&tray.join(format!("{TRAY_ICON_NAME}.svg")), ICON_SYMBOLIC_SVG);
+    // Keep app name as fallback for hosts that ignore -symbolic.
     write_file(&tray.join(format!("{APP_ICON_NAME}.png")), ICON_PNG_64);
-    write_file(&tray.join(format!("{APP_ICON_NAME}.svg")), ICON_SVG);
 
-    // Refresh icon cache so GTK/GNOME pick up the files immediately.
     refresh_icon_cache(&hicolor);
-
-    // Keep desktop entry Icon= on an absolute PNG path (most reliable in GNOME).
     ensure_desktop_entry();
 }
 
@@ -146,8 +149,10 @@ fn ensure_desktop_entry() {
         return;
     };
     let _ = fs::create_dir_all(&apps);
+    // Absolute 512px path so GNOME Shell picks the new mark even when its
+    // themed-icon cache still holds an older size under the same name.
     let icon = hicolor_root()
-        .join("128x128/apps")
+        .join("512x512/apps")
         .join(format!("{APP_ICON_NAME}.png"));
     let icon = icon.display();
     let desktop = format!(
@@ -193,9 +198,11 @@ pub fn installed_icon_path() -> PathBuf {
         .join(format!("{APP_ICON_NAME}.png"))
 }
 
-/// ARGB32 pixmap for StatusNotifierItem.
+/// ARGB32 pixmap for StatusNotifierItem (monochrome symbolic).
 pub fn tray_icon_pixmap() -> Vec<ksni::Icon> {
-    let Ok(img) = image::load_from_memory_with_format(ICON_PNG_64, image::ImageFormat::Png) else {
+    let Ok(img) =
+        image::load_from_memory_with_format(ICON_SYMBOLIC_PNG_64, image::ImageFormat::Png)
+    else {
         return Vec::new();
     };
     let (width, height) = image::GenericImageView::dimensions(&img);

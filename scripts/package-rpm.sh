@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION="${VERSION:-0.1.0}"
+VERSION="${VERSION:-0.2.0}"
 OUT_DIR="${OUT_DIR:-$ROOT/dist}"
 BIN="$ROOT/target/release/di_player"
 
@@ -22,8 +22,12 @@ sed 's|^Icon=.*|Icon=com.alchymista.DiPlayer|; s|^Exec=.*|Exec=di_player|' \
   "$ROOT/data/com.alchymista.DiPlayer.desktop" > "$TOP/SOURCES/com.alchymista.DiPlayer.desktop"
 cp "$ROOT/resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg" \
   "$TOP/SOURCES/com.alchymista.DiPlayer.svg"
+cp "$ROOT/resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg" \
+  "$TOP/SOURCES/com.alchymista.DiPlayer-symbolic.svg"
+cp "$ROOT/resources/icons/hicolor/64x64/apps/com.alchymista.DiPlayer-symbolic.png" \
+  "$TOP/SOURCES/com.alchymista.DiPlayer-symbolic-64.png"
 
-for s in 16 32 48 64 128 256; do
+for s in 16 22 24 32 48 64 96 128 256 512; do
   src="$ROOT/resources/icons/hicolor/${s}x${s}/apps/com.alchymista.DiPlayer.png"
   [[ -f "$src" ]] || { echo "missing icon size $s"; exit 1; }
   cp "$src" "$TOP/SOURCES/com.alchymista.DiPlayer-${s}.png"

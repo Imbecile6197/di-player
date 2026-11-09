@@ -53,9 +53,14 @@ cd di-player
 ## Features
 
 - Premium login (email/password) or paste a listen key
-- Channel browser with genre filters, search, and cover art
+- Channel browser with genre filters, search, favorites, list/grid views, and cover art
+- Decorative visualizer (bars, wave, sine, circular, particles, mountain, oscilloscope, dots)
+- Themes: Neon Club, Soft Night, Monochrome, Minimal
+- Cover-driven accent colors, blurred backdrop, rotating cover while playing
+- Fullscreen Now Playing (F11) and keyboard shortcuts
+- UI languages: English, Čeština, Deutsch (or system default)
 - Now-playing metadata
-- mpv-backed streaming (premium 320 kbps MP3)
+- mpv-backed streaming with selectable premium bitrate (320 / 128 / 64 kbps)
 - StatusNotifierItem system tray (show/hide, play/pause, stop, quit)
 - Close-to-tray; credentials in `~/.config/di-player/`
 

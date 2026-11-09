@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 DIST="${DIST:-$ROOT/dist}"
 SITE="${SITE:-$ROOT/site}"
-VERSION="${VERSION:-0.1.0}"
+VERSION="${VERSION:-0.2.0}"
 
 RPM="$(ls "$DIST"/di-player-*.rpm 2>/dev/null | head -1 || true)"
 DEB="$(ls "$DIST"/di-player_*.deb 2>/dev/null | head -1 || true)"

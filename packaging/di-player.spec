@@ -1,5 +1,5 @@
 Name:           di-player
-Version:        0.1.0
+Version:        0.2.0
 Release:        1%{?dist}
 Summary:        Native GNOME player for DI.fm premium radio
 License:        GPL-3.0-or-later
@@ -9,13 +9,14 @@ Requires:       gtk4 libadwaita mpv
 
 %description
 DI Player is a native GNOME (GTK4 + libadwaita) client for Digitally Imported
-(DI.fm) premium radio streams, with channel browser, login, and system tray.
+(DI.fm) premium radio streams, with channel browser, login, visualizer,
+themes, Czech/German localization, and system tray.
 
 %install
 mkdir -p %{buildroot}%{_bindir}
 mkdir -p %{buildroot}%{_datadir}/applications
 mkdir -p %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
-mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,32x32,48x48,64x64,128x128,256x256}/apps
+mkdir -p %{buildroot}%{_datadir}/icons/hicolor/{16x16,22x22,24x24,32x32,48x48,64x64,96x96,128x128,256x256,512x512}/apps
 
 install -m 755 %{_sourcedir}/di_player %{buildroot}%{_bindir}/di_player
 
@@ -24,17 +25,23 @@ install -m 644 %{_sourcedir}/com.alchymista.DiPlayer.desktop \
 
 install -m 644 %{_sourcedir}/com.alchymista.DiPlayer.svg \
   %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg
+install -m 644 %{_sourcedir}/com.alchymista.DiPlayer-symbolic.svg \
+  %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg
 
-for s in 16 32 48 64 128 256; do
+for s in 16 22 24 32 48 64 96 128 256 512; do
   install -m 644 %{_sourcedir}/com.alchymista.DiPlayer-${s}.png \
     %{buildroot}%{_datadir}/icons/hicolor/${s}x${s}/apps/com.alchymista.DiPlayer.png
 done
+install -m 644 %{_sourcedir}/com.alchymista.DiPlayer-symbolic-64.png \
+  %{buildroot}%{_datadir}/icons/hicolor/64x64/apps/com.alchymista.DiPlayer-symbolic.png
 
 %files
 %{_bindir}/di_player
 %{_datadir}/applications/com.alchymista.DiPlayer.desktop
 %{_datadir}/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg
+%{_datadir}/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg
 %{_datadir}/icons/hicolor/*/apps/com.alchymista.DiPlayer.png
+%{_datadir}/icons/hicolor/64x64/apps/com.alchymista.DiPlayer-symbolic.png
 
 %post
 /bin/touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
@@ -49,5 +56,9 @@ done
 /usr/bin/update-desktop-database %{_datadir}/applications &>/dev/null || :
 
 %changelog
+* Mon Nov 09 2026 Alchymista <alchymista@local> - 0.2.0-1
+- Visualizer, themes, CS/DE localization, monochrome Di icon
+- Stop writing user hicolor index.theme (broke other GTK apps)
+
 * Sat Nov 07 2026 Alchymista <alchymista@local> - 0.1.0-1
 - Initial package

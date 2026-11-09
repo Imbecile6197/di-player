@@ -3,7 +3,7 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-VERSION="${VERSION:-0.1.0}"
+VERSION="${VERSION:-0.2.0}"
 ARCH="${ARCH:-amd64}"
 OUT_DIR="${OUT_DIR:-$ROOT/dist}"
 BIN="${BIN:-$ROOT/target/release/di_player}"
@@ -30,13 +30,19 @@ sed 's|^Icon=.*|Icon=com.alchymista.DiPlayer|; s|^Exec=.*|Exec=di_player|' \
 install -m 644 \
   "$ROOT/resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg" \
   "$PKG/usr/share/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg"
+install -m 644 \
+  "$ROOT/resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg" \
+  "$PKG/usr/share/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg"
 
-for s in 16 32 48 64 128 256; do
+for s in 16 22 24 32 48 64 96 128 256 512; do
   mkdir -p "$PKG/usr/share/icons/hicolor/${s}x${s}/apps"
   install -m 644 \
     "$ROOT/resources/icons/hicolor/${s}x${s}/apps/com.alchymista.DiPlayer.png" \
     "$PKG/usr/share/icons/hicolor/${s}x${s}/apps/com.alchymista.DiPlayer.png"
 done
+install -m 644 \
+  "$ROOT/resources/icons/hicolor/64x64/apps/com.alchymista.DiPlayer-symbolic.png" \
+  "$PKG/usr/share/icons/hicolor/64x64/apps/com.alchymista.DiPlayer-symbolic.png"
 
 install -m 644 "$ROOT/LICENSE" "$PKG/usr/share/doc/di-player/copyright"
 install -m 644 "$ROOT/README.md" "$PKG/usr/share/doc/di-player/README.md"

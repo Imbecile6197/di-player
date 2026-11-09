@@ -100,10 +100,10 @@ impl DiClient {
         Self::json(response)
     }
 
-    pub fn stream_channels(&self) -> Result<Vec<StreamChannel>, ApiError> {
+    pub fn stream_channels(&self, quality_key: &str) -> Result<Vec<StreamChannel>, ApiError> {
         let response = self
             .http
-            .get(format!("{LISTEN_BASE}/premium_high.json"))
+            .get(format!("{LISTEN_BASE}/{quality_key}.json"))
             .send()?;
         Self::json(response)
     }
@@ -132,9 +132,18 @@ impl DiClient {
         Ok(attach_listen_key(&stream, listen_key))
     }
 
-    pub fn stream_url_for_key(&self, channel_key: &str, listen_key: &str) -> Result<String, ApiError> {
-        let playlist = format!("{LISTEN_BASE}/premium_high/{channel_key}.pls");
+    pub fn stream_url_for_key(
+        &self,
+        channel_key: &str,
+        listen_key: &str,
+        quality_key: &str,
+    ) -> Result<String, ApiError> {
+        let playlist = format!("{LISTEN_BASE}/{quality_key}/{channel_key}.pls");
         self.resolve_stream_url(&playlist, listen_key)
+    }
+
+    pub fn playlist_url(channel_key: &str, quality_key: &str) -> String {
+        format!("{LISTEN_BASE}/{quality_key}/{channel_key}.pls")
     }
 
     pub fn fetch_bytes(&self, url: &str) -> Result<Vec<u8>, ApiError> {

@@ -1,18 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img">
-  <defs>
-    <linearGradient id="g" x1="12" y1="8" x2="116" y2="120" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#00D4FF"/>
-      <stop offset="0.55" stop-color="#7C3AED"/>
-      <stop offset="1" stop-color="#FF2D95"/>
-    </linearGradient>
-    <linearGradient id="disc" x1="40" y1="36" x2="92" y2="96" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0B1A2E"/>
-      <stop offset="1" stop-color="#15263F"/>
-    </linearGradient>
-  </defs>
-  <rect width="128" height="128" rx="28" fill="#07111F"/>
-  <circle cx="64" cy="64" r="44" fill="url(#g)" opacity="0.95"/>
-  <circle cx="64" cy="64" r="30" fill="url(#disc)"/>
-  <circle cx="64" cy="64" r="10" fill="#7EF9FF"/>
-  <path d="M78 42v34.5a11 11 0 1 1-8-10.6V52l18-6V42z" fill="#7EF9FF"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Di">
+  <!-- Monochrome DI Player mark — bold geometric Di -->
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- D -->
+  <path fill="#ffffff"
+        d="M28 30h22c22 0 36 12.5 36 34s-14 34-36 34H28V30zm16 14v40h6c12.5 0 20-7.5 20-20s-7.5-20-20-20h-6z"/>
+  <!-- i stem -->
+  <rect x="92" y="52" width="14" height="46" rx="3" fill="#ffffff"/>
+  <!-- i dot -->
+  <rect x="92" y="30" width="14" height="14" rx="3" fill="#ffffff"/>
 </svg>

@@ -67,7 +67,7 @@ install_files() {
   install -Dm755 "$bin" "$BIN_DIR/di_player"
 
   # Icons
-  local sizes=(16 32 48 64 128 256)
+  local sizes=(16 22 24 32 48 64 96 128 256 512)
   local s
   for s in "${sizes[@]}"; do
     local src="$ROOT/resources/icons/hicolor/${s}x${s}/apps/com.alchymista.DiPlayer.png"
@@ -80,54 +80,10 @@ install_files() {
     "$ROOT/resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg" \
     "$ICON_BASE/scalable/apps/com.alchymista.DiPlayer.svg"
 
-  if [[ ! -f "$ICON_BASE/index.theme" ]]; then
-    cat > "$ICON_BASE/index.theme" <<'EOF'
-[Icon Theme]
-Name=Hicolor
-Comment=Fallback icon theme
-Hidden=true
-Directories=16x16/apps,32x32/apps,48x48/apps,64x64/apps,128x128/apps,256x256/apps,scalable/apps
+  # Do not write index.theme here — a partial user hicolor index shadows the
+  # system theme and breaks other GTK apps' bundled icons.
 
-[16x16/apps]
-Size=16
-Context=Applications
-Type=Fixed
-
-[32x32/apps]
-Size=32
-Context=Applications
-Type=Fixed
-
-[48x48/apps]
-Size=48
-Context=Applications
-Type=Fixed
-
-[64x64/apps]
-Size=64
-Context=Applications
-Type=Fixed
-
-[128x128/apps]
-Size=128
-Context=Applications
-Type=Fixed
-
-[256x256/apps]
-Size=256
-Context=Applications
-Type=Fixed
-
-[scalable/apps]
-Size=128
-Context=Applications
-Type=Scalable
-MinSize=16
-MaxSize=512
-EOF
-  fi
-
-  local icon_path="$ICON_BASE/128x128/apps/com.alchymista.DiPlayer.png"
+  local icon_path="$ICON_BASE/512x512/apps/com.alchymista.DiPlayer.png"
   cat > "$APP_DIR/com.alchymista.DiPlayer.desktop" <<EOF
 [Desktop Entry]
 Name=DI Player

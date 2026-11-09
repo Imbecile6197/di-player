@@ -1,4 +1,5 @@
-use crate::icons::{self, APP_ICON_NAME};
+use crate::i18n;
+use crate::icons::{self, TRAY_ICON_NAME};
 use ksni::blocking::{Handle, TrayMethods};
 use ksni::menu::StandardItem;
 use ksni::{Icon, MenuItem};
@@ -38,12 +39,11 @@ impl ksni::Tray for DiTray {
     }
 
     fn title(&self) -> String {
-        "DI Player".into()
+        i18n::t("app-title")
     }
 
     fn icon_name(&self) -> String {
-        // Same application icon whether playing or idle.
-        APP_ICON_NAME.into()
+        TRAY_ICON_NAME.into()
     }
 
     fn icon_theme_path(&self) -> String {
@@ -62,13 +62,13 @@ impl ksni::Tray for DiTray {
         } else if !self.track.is_empty() {
             self.track.clone()
         } else {
-            "DI.fm premium radio".into()
+            i18n::t("tray-tooltip")
         };
 
         ksni::ToolTip {
-            title: "DI Player".into(),
+            title: i18n::t("app-title"),
             description,
-            icon_name: APP_ICON_NAME.into(),
+            icon_name: TRAY_ICON_NAME.into(),
             icon_pixmap: self.icon_pixmap.clone(),
         }
     }
@@ -82,7 +82,11 @@ impl ksni::Tray for DiTray {
     }
 
     fn menu(&self) -> Vec<MenuItem<Self>> {
-        let play_label = if self.playing { "Pause" } else { "Play / Resume" };
+        let play_label = if self.playing {
+            i18n::t("tray-pause")
+        } else {
+            i18n::t("tray-play")
+        };
         let play_icon = if self.playing {
             "media-playback-pause-symbolic"
         } else {
@@ -91,7 +95,7 @@ impl ksni::Tray for DiTray {
 
         vec![
             StandardItem {
-                label: "Show DI Player".into(),
+                label: i18n::t("tray-show"),
                 icon_name: "view-reveal-symbolic".into(),
                 activate: Box::new(|this: &mut Self| {
                     let _ = this.tx.send(TrayCommand::ToggleWindow);
@@ -100,7 +104,7 @@ impl ksni::Tray for DiTray {
             }
             .into(),
             StandardItem {
-                label: play_label.into(),
+                label: play_label,
                 icon_name: play_icon.into(),
                 activate: Box::new(|this: &mut Self| {
                     let _ = this.tx.send(TrayCommand::PlayPause);
@@ -109,7 +113,7 @@ impl ksni::Tray for DiTray {
             }
             .into(),
             StandardItem {
-                label: "Stop".into(),
+                label: i18n::t("tray-stop"),
                 icon_name: "media-playback-stop-symbolic".into(),
                 activate: Box::new(|this: &mut Self| {
                     let _ = this.tx.send(TrayCommand::Stop);
@@ -119,7 +123,7 @@ impl ksni::Tray for DiTray {
             .into(),
             MenuItem::Separator,
             StandardItem {
-                label: "Quit".into(),
+                label: i18n::t("tray-quit"),
                 icon_name: "application-exit-symbolic".into(),
                 activate: Box::new(|this: &mut Self| {
                     let _ = this.tx.send(TrayCommand::Quit);
@@ -132,7 +136,6 @@ impl ksni::Tray for DiTray {
 }
 
 pub fn spawn_service(tx: Sender<TrayCommand>) -> Result<Handle<DiTray>, ksni::Error> {
-    // Ensure theme hosts can resolve the shared icon name.
     icons::install_user_icons();
     DiTray::new(tx)
         .assume_sni_available(true)
@@ -150,4 +153,8 @@ pub fn update_now_playing(
         tray.channel = channel.to_string();
         tray.track = track.to_string();
     });
+}
+
+pub fn refresh_menu(handle: &Handle<DiTray>) {
+    handle.update(|_| {});
 }
