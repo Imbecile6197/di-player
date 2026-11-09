@@ -54,7 +54,7 @@ Section: sound
 Priority: optional
 Architecture: ${ARCH}
 Depends: libgtk-4-1, libadwaita-1-0, mpv
-Maintainer: Alchymista <alchymista@users.noreply.github.com>
+Maintainer: Libor Macák <jsem@libormacak.eu>
 Description: Native GNOME player for DI.fm premium radio
  DI Player is a GTK4/libadwaita client for Digitally Imported (DI.fm)
  premium internet radio, with channel browser, login and system tray.

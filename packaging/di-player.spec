@@ -56,9 +56,9 @@ install -m 644 %{_sourcedir}/com.alchymista.DiPlayer-symbolic-64.png \
 /usr/bin/update-desktop-database %{_datadir}/applications &>/dev/null || :
 
 %changelog
-* Mon Nov 09 2026 Alchymista <alchymista@local> - 0.2.0-1
+* Mon Nov 09 2026 Libor Macák <jsem@libormacak.eu> - 0.2.0-1
 - Visualizer, themes, CS/DE localization, monochrome Di icon
 - Stop writing user hicolor index.theme (broke other GTK apps)
 
-* Sat Nov 07 2026 Alchymista <alchymista@local> - 0.1.0-1
+* Sat Nov 07 2026 Libor Macák <jsem@libormacak.eu> - 0.1.0-1
 - Initial package

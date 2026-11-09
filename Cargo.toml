@@ -4,7 +4,7 @@ version = "0.2.0"
 edition = "2021"
 description = "Native GNOME player for DI.fm premium radio"
 license = "GPL-3.0-or-later"
-authors = ["Alchymista"]
+authors = ["Libor Macák <jsem@libormacak.eu>"]
 
 [dependencies]
 gtk4 = { version = "0.10", package = "gtk4", features = ["v4_14"] }
