@@ -10,33 +10,35 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+# Containers default to `sh` (dash); packaging steps use bash brace expansion.
+defaults:
+  run:
+    shell: bash
+
 jobs:
+  # GTK >= 4.14 and libadwaita >= 1.6 are required; Ubuntu runner images
+  # (22.04/24.04) are too old, so build inside an Ubuntu 26.04 container.
   ubuntu:
-    strategy:
-      fail-fast: false
-      matrix:
-        include:
-          - os: ubuntu-24.04
-            name: ubuntu
-          - os: ubuntu-22.04
-            name: ubuntu-22
-    name: ubuntu (${{ matrix.name }})
-    runs-on: ${{ matrix.os }}
+    name: ubuntu
+    runs-on: ubuntu-24.04
+    container: ubuntu:26.04
     steps:
-      - uses: actions/checkout@v4
       - name: Install dependencies
+        env:
+          DEBIAN_FRONTEND: noninteractive
         run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            build-essential pkg-config libssl-dev \
+          apt-get update
+          apt-get install -y --no-install-recommends \
+            ca-certificates curl git build-essential pkg-config libssl-dev \
             libgtk-4-dev libadwaita-1-dev mpv
+      - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo test --locked
       - run: cargo build --release --locked
       - name: Package
         run: |
-          stage=di-player-${{ matrix.name }}
+          stage=di-player-ubuntu
           mkdir -p "$stage"/{bin,share/applications,share/icons/hicolor/scalable/apps,share/icons/hicolor/128x128/apps,scripts}
           cp target/release/di_player "$stage/bin/"
           cp resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg "$stage/share/icons/hicolor/scalable/apps/"
@@ -44,16 +46,16 @@ jobs:
           sed 's|^Exec=.*|Exec=di_player|; s|^Icon=.*|Icon=com.alchymista.DiPlayer|' \
             data/com.alchymista.DiPlayer.desktop > "$stage/share/applications/com.alchymista.DiPlayer.desktop"
           cp scripts/install.sh README.md LICENSE "$stage/"
-          tar -czf "di-player-${{ matrix.name }}.tar.gz" "$stage"
+          tar -czf di-player-ubuntu.tar.gz "$stage"
       - uses: actions/upload-artifact@v4
         with:
-          name: di-player-${{ matrix.name }}
-          path: di-player-${{ matrix.name }}.tar.gz
+          name: di-player-ubuntu
+          path: di-player-ubuntu.tar.gz
 
   fedora:
     name: fedora
     runs-on: ubuntu-24.04
-    container: fedora:41
+    container: fedora:45
     steps:
       - uses: actions/checkout@v4
       - name: Install dependencies
@@ -91,5 +93,4 @@ jobs:
         with:
           files: |
             di-player-ubuntu/di-player-ubuntu.tar.gz
-            di-player-ubuntu-22/di-player-ubuntu-22.tar.gz
             di-player-fedora/di-player-fedora.tar.gz
