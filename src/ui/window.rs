@@ -120,10 +120,9 @@ impl DiPlayerWindow {
         {
             let tray_handle = tray_handle.clone();
             thread::spawn(move || {
-                if let Ok(handle) = tray::spawn_service(tray_tx) {
-                    *tray_handle.lock() = Some(handle);
-                } else {
-                    eprintln!("DI Player: StatusNotifierItem tray unavailable");
+                match tray::spawn_service(tray_tx) {
+                    Ok(handle) => *tray_handle.lock() = Some(handle),
+                    Err(err) => eprintln!("DI Player: StatusNotifierItem tray unavailable: {err}"),
                 }
             });
         }
@@ -1266,11 +1265,14 @@ fn play_channel(channel: &Channel, shared: &Shared) {
     let quality_label = quality.short_label().to_string();
     let shared = shared.clone();
 
-    let (tx, rx) = async_channel::bounded::<Result<String, String>>(1);
+    // Resolving the playlist and starting mpv both block (network, IPC socket),
+    // so do them off the GTK thread to keep the window responsive.
+    let (tx, rx) = async_channel::bounded::<Result<anyhow::Result<()>, String>>(1);
     thread::spawn(move || {
         let result = client
             .resolve_stream_url(&playlist, &listen_key)
-            .map_err(|e| e.to_string());
+            .map_err(|e| e.to_string())
+            .map(|url| player.play_url(&url));
         let _ = tx.send_blocking(result);
     });
 
@@ -1279,8 +1281,8 @@ fn play_channel(channel: &Channel, shared: &Shared) {
             return;
         };
         match result {
-            Ok(url) => {
-                if let Err(err) = player.play_url(&url) {
+            Ok(played) => {
+                if let Err(err) = played {
                     set_meta_labels(&shared, &i18n::t("playback-failed"), &err.to_string());
                     set_playing_ui(&shared, false);
                     shared.toast.add_toast(adw::Toast::new(&i18n::t_str(

@@ -1,6 +1,6 @@
 [package]
 name = "di_player"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 description = "Native GNOME player for DI.fm premium radio"
 license = "GPL-3.0-or-later"
@@ -35,3 +35,7 @@ cairo-rs = "0.21"
 lto = true
 codegen-units = 1
 strip = true
+
+# ksni s opravou registrace ikony v liště v GNOME 51 (viz vendor/ksni/src/service.rs).
+[patch.crates-io]
+ksni = { path = "vendor/ksni" }

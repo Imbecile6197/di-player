@@ -19,6 +19,8 @@ pub enum PlaybackState {
 
 pub struct MpvPlayer {
     inner: Arc<Mutex<PlayerInner>>,
+    /// Serializes mpv startup so `inner` is not held while waiting for the socket.
+    start_lock: Mutex<()>,
 }
 
 struct PlayerInner {
@@ -39,6 +41,7 @@ impl MpvPlayer {
                 volume: 0.85,
                 current_url: None,
             })),
+            start_lock: Mutex::new(()),
         }
     }
 
@@ -51,14 +54,17 @@ impl MpvPlayer {
     }
 
     pub fn ensure_running(&self) -> Result<()> {
-        let mut inner = self.inner.lock();
-        if let Some(child) = inner.child.as_mut() {
-            match child.try_wait() {
-                Ok(None) => return Ok(()),
-                Ok(Some(_)) | Err(_) => {
-                    inner.child = None;
-                    if let Some(sock) = inner.socket.take() {
-                        let _ = std::fs::remove_file(sock);
+        let _starting = self.start_lock.lock();
+        {
+            let mut inner = self.inner.lock();
+            if let Some(child) = inner.child.as_mut() {
+                match child.try_wait() {
+                    Ok(None) => return Ok(()),
+                    Ok(Some(_)) | Err(_) => {
+                        inner.child = None;
+                        if let Some(sock) = inner.socket.take() {
+                            let _ = std::fs::remove_file(sock);
+                        }
                     }
                 }
             }
@@ -70,7 +76,7 @@ impl MpvPlayer {
         let socket = runtime.join(format!("di-player-mpv-{}.sock", std::process::id()));
         let _ = std::fs::remove_file(&socket);
 
-        let child = Command::new("mpv")
+        let mut child = Command::new("mpv")
             .args([
                 "--no-video",
                 "--no-terminal",
@@ -88,19 +94,25 @@ impl MpvPlayer {
             .spawn()
             .context("failed to start mpv — is mpv installed?")?;
 
-        // Wait until the IPC socket accepts connections.
-        let deadline = Instant::now() + Duration::from_secs(3);
+        // Wait until the IPC socket accepts connections. A cold start (Flatpak,
+        // busy system) can take a few seconds; never leave a stray mpv behind.
+        let deadline = Instant::now() + Duration::from_secs(10);
         loop {
             if UnixStream::connect(&socket).is_ok() {
                 break;
             }
+            if let Ok(Some(status)) = child.try_wait() {
+                bail!("mpv exited during startup ({status})");
+            }
             if Instant::now() > deadline {
-                let _ = child;
+                let _ = child.kill();
+                let _ = child.wait();
                 bail!("mpv IPC socket did not become ready");
             }
             thread::sleep(Duration::from_millis(40));
         }
 
+        let mut inner = self.inner.lock();
         inner.child = Some(child);
         inner.socket = Some(socket);
         Ok(())

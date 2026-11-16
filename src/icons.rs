@@ -132,7 +132,6 @@ pub fn install_user_icons() {
     write_file(&tray.join(format!("{APP_ICON_NAME}.png")), ICON_PNG_64);
 
     refresh_icon_cache(&hicolor);
-    ensure_desktop_entry();
 }
 
 fn refresh_icon_cache(hicolor: &Path) {
@@ -141,42 +140,6 @@ fn refresh_icon_cache(hicolor: &Path) {
         .status();
     let _ = std::process::Command::new("gtk-update-icon-cache")
         .args(["-f", &hicolor.to_string_lossy()])
-        .status();
-}
-
-fn ensure_desktop_entry() {
-    let Some(apps) = dirs::data_dir().map(|d| d.join("applications")) else {
-        return;
-    };
-    let _ = fs::create_dir_all(&apps);
-    // Absolute 512px path so GNOME Shell picks the new mark even when its
-    // themed-icon cache still holds an older size under the same name.
-    let icon = hicolor_root()
-        .join("512x512/apps")
-        .join(format!("{APP_ICON_NAME}.png"));
-    let icon = icon.display();
-    let desktop = format!(
-        "\
-[Desktop Entry]
-Name=DI Player
-GenericName=Internet Radio
-Comment=Native GNOME player for DI.fm premium radio
-Exec=di_player
-Icon={icon}
-Terminal=false
-Type=Application
-Categories=AudioVideo;Audio;Player;Tuner;
-Keywords=radio;di.fm;digitally;imported;electronic;
-StartupNotify=true
-StartupWMClass=com.alchymista.DiPlayer
-"
-    );
-    write_file(
-        &apps.join("com.alchymista.DiPlayer.desktop"),
-        desktop.as_bytes(),
-    );
-    let _ = std::process::Command::new("update-desktop-database")
-        .arg(&apps)
         .status();
 }
 

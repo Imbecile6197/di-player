@@ -16,3 +16,5 @@ target-ubuntu/
 /dist/
 /site/
 target-ubuntu/
+.flatpak-builder/
+*-private.asc

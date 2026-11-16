@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>com.alchymista.DiPlayer</id>
+  <name>DI Player</name>
+  <summary>Native GNOME player for DI.fm premium radio</summary>
+  <summary xml:lang="cs">Nativní GNOME přehrávač prémiového rádia DI.fm</summary>
+  <summary xml:lang="de">Nativer GNOME-Player für DI.fm-Premium-Radio</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-or-later</project_license>
+  <developer id="eu.libormacak">
+    <name>Libor Macák</name>
+  </developer>
+  <description>
+    <p>DI Player is a native GNOME internet radio player for DI.fm premium accounts.</p>
+    <p xml:lang="cs">DI Player je nativní GNOME přehrávač internetového rádia pro prémiové účty DI.fm.</p>
+    <p xml:lang="de">DI Player ist ein nativer GNOME-Internetradio-Player für DI.fm-Premium-Konten.</p>
+    <ul>
+      <li>Premium login with email and password, or a listen key</li>
+      <li xml:lang="cs">Přihlášení prémiovým e-mailem a heslem, nebo klíčem pro poslech</li>
+      <li xml:lang="de">Premium-Anmeldung mit E-Mail und Passwort oder einem Listen-Key</li>
+      <li>Channel browser with genres, search, favorites and cover art</li>
+      <li xml:lang="cs">Procházení kanálů s žánry, hledáním, oblíbenými a obaly</li>
+      <li xml:lang="de">Kanalbrowser mit Genres, Suche, Favoriten und Covern</li>
+      <li>Decorative visualizer, themes and fullscreen Now Playing</li>
+      <li xml:lang="cs">Dekorativní vizualizér, motivy a přehrávání na celou obrazovku</li>
+      <li xml:lang="de">Dekorativer Visualizer, Themes und Vollbild-Wiedergabe</li>
+      <li>Selectable premium bitrate and a top bar icon</li>
+      <li xml:lang="cs">Volitelný prémiový datový tok a ikona v horní liště</li>
+      <li xml:lang="de">Wählbare Premium-Bitrate und Symbol in der oberen Leiste</li>
+    </ul>
+  </description>
+  <launchable type="desktop-id">com.alchymista.DiPlayer.desktop</launchable>
+  <url type="homepage">https://github.com/Imbecile6197/di-player</url>
+  <url type="bugtracker">https://github.com/Imbecile6197/di-player/issues</url>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="0.2.1" date="2026-11-16">
+      <description>
+        <p>DI Player is now distributed as a Flatpak. Channel covers load as small thumbnails, which fixes high memory use and slowness, starting playback no longer freezes the window, and the top bar icon shows again in GNOME 51.</p>
+      </description>
+    </release>
+    <release version="0.2.0" date="2026-11-09">
+      <description>
+        <p>Visualizer, themes, cover-driven colors and UI in English, Czech and German.</p>
+      </description>
+    </release>
+    <release version="0.1.0" date="2026-11-07"/>
+  </releases>
+</component>

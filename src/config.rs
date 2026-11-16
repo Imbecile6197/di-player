@@ -144,7 +144,27 @@ fn config_dir() -> Result<PathBuf> {
         .context("no XDG config directory")?
         .join("di-player");
     fs::create_dir_all(&dir)?;
+    if let Some(home) = dirs::home_dir() {
+        migrate_legacy_config(&home.join(".config/di-player"), &dir);
+    }
     Ok(dir)
+}
+
+/// Inside Flatpak the config lives in `~/.var/app/<id>/config/di-player`.
+/// Copy settings and login from a previous non-Flatpak install
+/// (`~/.config/di-player`, exposed read-only to the sandbox) once.
+fn migrate_legacy_config(legacy: &std::path::Path, dir: &std::path::Path) {
+    if legacy == dir || !legacy.is_dir() {
+        return;
+    }
+    for name in ["settings.json", "credentials.json"] {
+        let (from, to) = (legacy.join(name), dir.join(name));
+        if from.is_file() && !to.exists() && fs::copy(&from, &to).is_ok() {
+            if name == "credentials.json" {
+                let _ = fs::set_permissions(&to, fs::Permissions::from_mode(0o600));
+            }
+        }
+    }
 }
 
 impl AppSettings {
@@ -200,4 +220,28 @@ pub fn is_logged_in() -> bool {
     load_credentials()
         .map(|c| !c.listen_key.is_empty())
         .unwrap_or(false)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn migrates_legacy_config_once_without_overwriting() {
+        let base = std::env::temp_dir().join(format!("di-player-migrate-{}", std::process::id()));
+        let (legacy, dir) = (base.join("legacy"), base.join("new"));
+        fs::create_dir_all(&legacy).unwrap();
+        fs::create_dir_all(&dir).unwrap();
+        fs::write(legacy.join("settings.json"), "old-settings").unwrap();
+        fs::write(legacy.join("credentials.json"), "old-creds").unwrap();
+        fs::write(dir.join("settings.json"), "new-settings").unwrap();
+
+        migrate_legacy_config(&legacy, &dir);
+
+        assert_eq!(fs::read_to_string(dir.join("settings.json")).unwrap(), "new-settings");
+        assert_eq!(fs::read_to_string(dir.join("credentials.json")).unwrap(), "old-creds");
+        let mode = fs::metadata(dir.join("credentials.json")).unwrap().permissions().mode();
+        assert_eq!(mode & 0o777, 0o600);
+        fs::remove_dir_all(&base).unwrap();
+    }
 }
