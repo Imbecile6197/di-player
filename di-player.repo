@@ -1,0 +1,7 @@
+[di-player]
+name=DI Player (GitHub)
+baseurl=https://imbecile6197.github.io/di-player/rpm
+enabled=1
+gpgcheck=0
+repo_gpgcheck=0
+type=rpm-md

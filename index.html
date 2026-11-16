@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DI Player</title>
+<style>
+  :root { color-scheme: light dark; --accent: #2f8fd8; }
+  body { font: 16px/1.5 system-ui, sans-serif; max-width: 42rem; margin: 3rem auto; padding: 0 1rem; }
+  header { display: flex; align-items: center; gap: 1rem; }
+  header img { width: 64px; height: 64px; }
+  h1 { margin: 0; }
+  a.button { display: inline-block; background: var(--accent); color: #fff; padding: .6rem 1.2rem;
+             border-radius: 999px; text-decoration: none; font-weight: 600; }
+  pre { background: color-mix(in srgb, currentColor 8%, transparent); padding: .8rem; border-radius: 8px;
+        overflow-x: auto; }
+  .muted { opacity: .7; font-size: .9rem; }
+</style>
+</head>
+<body>
+<header>
+  <img src="com.alchymista.DiPlayer.svg" alt="">
+  <div><h1>DI Player</h1><div>Nativní GNOME přehrávač prémiového rádia DI.fm</div></div>
+</header>
+<h2>Instalace</h2>
+<p><a class="button" href="di-player.flatpakref">Nainstalovat DI Player</a></p>
+<p>Otevře se v aplikaci Software. Nebo v terminálu:</p>
+<pre>flatpak install --user https://imbecile6197.github.io/di-player/di-player.flatpakref</pre>
+<p>Aktualizace pak instaluje aplikace Software nebo příkaz <code>flatpak update</code>.</p>
+<p class="muted">Je-li to vaše první aplikace z Flatpaku a DI Player se v přehledu aplikací neobjeví, odhlaste se a znovu přihlaste.</p>
+<h2 lang="en">Installation</h2>
+<p lang="en">Click the button above to install with Software, or run the command in a terminal.
+Updates are installed by Software or by <code>flatpak update</code>.
+If it is your first Flatpak app and DI Player does not appear in the app overview, log out and back in once.</p>
+<p class="muted">Starší balíčky RPM/DEB (repozitáře <code>rpm/</code> a <code>deb/</code>) se už neaktualizují – přejděte prosím na flatpak.</p>
+<p class="muted">Vydání a licence: <a href="https://github.com/Imbecile6197/di-player">github.com/Imbecile6197/di-player</a></p>
+</body>
+</html>

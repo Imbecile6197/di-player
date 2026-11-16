@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="Di">
+  <!-- Monochrome DI Player mark — bold geometric Di -->
+  <rect width="128" height="128" rx="28" fill="#111111"/>
+  <!-- D -->
+  <path fill="#ffffff"
+        d="M28 30h22c22 0 36 12.5 36 34s-14 34-36 34H28V30zm16 14v40h6c12.5 0 20-7.5 20-20s-7.5-20-20-20h-6z"/>
+  <!-- i stem -->
+  <rect x="92" y="52" width="14" height="46" rx="3" fill="#ffffff"/>
+  <!-- i dot -->
+  <rect x="92" y="30" width="14" height="14" rx="3" fill="#ffffff"/>
+</svg>

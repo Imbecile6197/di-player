@@ -1,0 +1,14 @@
+Origin: DI Player
+Label: DI Player
+Suite: stable
+Codename: stable
+Architectures: amd64
+Components: main
+Description: DI Player apt repository
+Date: Mon, 09 Nov 2026 15:45:16 +0000
+MD5Sum:
+ 4caf75a72b3155a0105d3b115f219f28      646 main/binary-amd64/Packages
+ 1c717b80ea5f62d091d4229af4f6e31e      483 main/binary-amd64/Packages.gz
+SHA256:
+ e050b2911a2f547c63a71ccd3bae86184596c14270820e0de7a443499b3d34ab      646 main/binary-amd64/Packages
+ f343bb451b542d3afcada2819366e9826106c59261033092a0bad7c0bb55dcaf      483 main/binary-amd64/Packages.gz
