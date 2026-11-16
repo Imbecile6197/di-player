@@ -37,6 +37,12 @@ flatpak build-sign --gpg-sign="$GPG_KEY" "$REPO" "$APP_ID" "$BRANCH"
 if [[ -e "$REPO/refs/heads/runtime/$APP_ID.Debug/x86_64/$BRANCH" ]]; then
     flatpak build-sign --runtime --gpg-sign="$GPG_KEY" "$REPO" "$APP_ID.Debug" "$BRANCH"
 fi
+# flatpak-builder zapíše větve appstream bez podpisu a build-update-repo je při
+# nezměněném obsahu znovu nevytvoří – klientům pak `flatpak update` hlásí
+# „GPG verification enabled, but no signatures found“. Proto je smažeme, aby je
+# build-update-repo níže vytvořil znovu a podepsal.
+flatpak run --filesystem="$WORK" --command=ostree org.flatpak.Builder \
+    --repo="$REPO" refs --delete appstream/x86_64 appstream2/x86_64 2>/dev/null || true
 flatpak build-update-repo \
     --gpg-sign="$GPG_KEY" \
     --title="DI Player" \
