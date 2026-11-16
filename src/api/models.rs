@@ -107,6 +107,32 @@ pub fn resolve_image_url(template: &str, size: u32) -> String {
         format!("https://{template}")
     };
 
-    url.replace("{?size,height,width,quality,pad}", &format!("?size={size}&quality=80"))
-        .replace("{?width,height,quality,pad}", &format!("?width={size}&height={size}&quality=80"))
+    // The AudioAddict CDN ignores `size=N` and serves the 1400×1400 original;
+    // only `size=NxN` (or width+height) returns a thumbnail.
+    let query = format!("?size={size}x{size}&quality=80");
+    if let Some(start) = url.find("{?") {
+        format!("{}{query}", &url[..start])
+    } else if url.contains('?') {
+        url
+    } else {
+        format!("{url}{query}")
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::resolve_image_url;
+
+    #[test]
+    fn image_urls_request_square_thumbnails() {
+        let t = "//cdn-images.audioaddict.com/4/0/e/x.png{?size,height,width,quality,pad}";
+        assert_eq!(
+            resolve_image_url(t, 192),
+            "https://cdn-images.audioaddict.com/4/0/e/x.png?size=192x192&quality=80"
+        );
+        assert_eq!(
+            resolve_image_url("//cdn-images.audioaddict.com/b/1/y.png", 96),
+            "https://cdn-images.audioaddict.com/b/1/y.png?size=96x96&quality=80"
+        );
+    }
 }
