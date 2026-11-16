@@ -8,7 +8,16 @@ Pages repozitáře `Imbecile6197/di-player` (větev `gh-pages`):
 
 Aktualizace instaluje aplikace Software nebo `flatpak update`.
 
-## Sestavení a zveřejnění
+## Vydání
+
+    ./packaging/publish.sh X.Y.Z "poznámky"
+
+Nejdřív doplňte `<release version="X.Y.Z">` do `data/com.alchymista.DiPlayer.metainfo.xml`.
+Skript zvedne verzi, sestaví a podepíše repozitář, otaguje a odešle `main`,
+zveřejní repozitář na Pages (čeká na nasazení) a vytvoří vydání na GitHubu
+s `.flatpak` a `SHA256SUMS`.
+
+## Sestavení a zveřejnění ručně
 
     flatpak install --user flathub org.flatpak.Builder org.gnome.Sdk//51 \
         org.freedesktop.Sdk.Extension.rust-stable//26.08

@@ -59,8 +59,9 @@ Enable **AppIndicator and KStatusNotifierItem**
 ## Maintainers
 
 ```bash
-./packaging/flatpak/build.sh   # signed Flatpak repo + dist/di-player-<version>.flatpak
-./packaging/flatpak/pages.sh   # publish to GitHub Pages (gh-pages)
+./packaging/publish.sh X.Y.Z "notes"   # build, sign, tag, publish Pages + GitHub release
+./packaging/flatpak/build.sh           # only build the signed repo + dist/di-player-<version>.flatpak
+./packaging/flatpak/pages.sh           # only publish the repo to GitHub Pages
 ```
 
 ## License
