@@ -10,6 +10,11 @@ on:
 env:
   CARGO_TERM_COLOR: always
 
+# Containers default to `sh` (dash); packaging steps use bash brace expansion.
+defaults:
+  run:
+    shell: bash
+
 jobs:
   # GTK >= 4.14 and libadwaita >= 1.6 are required; Ubuntu runner images
   # (22.04/24.04) are too old, so build inside an Ubuntu 26.04 container.
