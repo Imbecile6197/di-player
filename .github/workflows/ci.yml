@@ -4,8 +4,6 @@ on:
   push:
     branches: [main, master]
   pull_request:
-  release:
-    types: [published]
 
 env:
   CARGO_TERM_COLOR: always
@@ -79,18 +77,3 @@ jobs:
         with:
           name: di-player-fedora
           path: di-player-fedora.tar.gz
-
-  release-assets:
-    if: github.event_name == 'release'
-    needs: [ubuntu, fedora]
-    runs-on: ubuntu-24.04
-    permissions:
-      contents: write
-    steps:
-      - uses: actions/download-artifact@v4
-      - name: Upload to release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            di-player-ubuntu/di-player-ubuntu.tar.gz
-            di-player-fedora/di-player-fedora.tar.gz
