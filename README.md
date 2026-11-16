@@ -2,45 +2,27 @@
 
 Native GNOME (GTK4 + libadwaita) internet radio player for [DI.fm](https://www.di.fm) premium accounts.
 
-## Add package source & install
-
-### Fedora
+## Install (Flatpak)
 
 ```bash
-curl -fsSL https://imbecile6197.github.io/di-player/add-repo-fedora.sh | sudo bash
-sudo dnf install di-player
+flatpak install --user https://imbecile6197.github.io/di-player/di-player.flatpakref
 ```
 
-Or manually:
+Or open https://imbecile6197.github.io/di-player/ and click **Install** (opens GNOME Software).
+Updates come through Software or `flatpak update`. Works on any distribution with Flatpak
+and Flathub (the GNOME runtime is pulled from Flathub).
+
+### Moving from the RPM/DEB packages
+
+The old dnf/apt repository is no longer updated. Install the Flatpak, then remove the package
+and its source:
 
 ```bash
-sudo curl -fsSL https://imbecile6197.github.io/di-player/di-player.repo \
-  -o /etc/yum.repos.d/di-player.repo
-sudo dnf install di-player
+sudo dnf remove di-player && sudo rm /etc/yum.repos.d/di-player.repo          # Fedora
+sudo apt remove di-player && sudo rm /etc/apt/sources.list.d/di-player.list   # Ubuntu
 ```
 
-### Ubuntu
-
-```bash
-curl -fsSL https://imbecile6197.github.io/di-player/add-repo-ubuntu.sh | sudo bash
-sudo apt install di-player
-```
-
-Or manually:
-
-```bash
-echo 'deb [trusted=yes arch=amd64] https://imbecile6197.github.io/di-player/deb stable main' \
-  | sudo tee /etc/apt/sources.list.d/di-player.list
-sudo apt update
-sudo apt install di-player
-```
-
-> Ubuntu packages need **25.04+** (libadwaita ≥ 1.6). On older Ubuntu use source install below.
-
-Then run `di_player` or open **DI Player** from the app menu.
-
-Package repo / releases:  
-https://imbecile6197.github.io/di-player/ · https://github.com/Imbecile6197/di-player/releases
+Your login and settings from `~/.config/di-player/` are copied into the Flatpak on first start.
 
 ## Build from source
 
@@ -62,7 +44,7 @@ cd di-player
 - Now-playing metadata
 - mpv-backed streaming with selectable premium bitrate (320 / 128 / 64 kbps)
 - StatusNotifierItem system tray (show/hide, play/pause, stop, quit)
-- Close-to-tray; credentials in `~/.config/di-player/`
+- Close-to-tray; credentials in `~/.config/di-player/` (Flatpak: `~/.var/app/com.alchymista.DiPlayer/config/di-player/`)
 
 ## System tray (GNOME)
 
@@ -77,8 +59,8 @@ Enable **AppIndicator and KStatusNotifierItem**
 ## Maintainers
 
 ```bash
-./scripts/build-packages.sh      # dist/*.rpm + dist/*.deb
-./scripts/publish-pages-repo.sh  # site/ for GitHub Pages
+./packaging/flatpak/build.sh   # signed Flatpak repo + dist/di-player-<version>.flatpak
+./packaging/flatpak/pages.sh   # publish to GitHub Pages (gh-pages)
 ```
 
 ## License

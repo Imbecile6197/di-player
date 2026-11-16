@@ -1,0 +1,123 @@
+# Flatpak DI Player – sestavení: packaging/flatpak/build.sh
+# Zdrojový kód se bere z místní složky, ven jde podepsaný repozitář a .flatpak.
+id: com.alchymista.DiPlayer
+runtime: org.gnome.Platform
+runtime-version: '51'
+sdk: org.gnome.Sdk
+sdk-extensions:
+  - org.freedesktop.Sdk.Extension.rust-stable
+command: di_player
+# Překlady jsou přímo v aplikaci (fluent).
+separate-locales: false
+finish-args:
+  - --share=network
+  - --share=ipc
+  - --socket=wayland
+  - --socket=fallback-x11
+  - --socket=pulseaudio
+  - --device=dri
+  # ikona v horní liště (StatusNotifierItem)
+  - --talk-name=org.kde.StatusNotifierWatcher
+  - --own-name=org.kde.*
+  # převzetí nastavení a přihlášení z instalace mimo Flatpak (jen čtení).
+  # Ne xdg-config/di-player – to by se připojilo i přes vlastní (zapisovatelnou)
+  # konfiguraci aplikace v ~/.var/app a ukládání by selhalo.
+  - --filesystem=~/.config/di-player:ro
+cleanup:
+  - /include
+  - /lib/pkgconfig
+  - /share/man
+  - /share/doc
+  - '*.a'
+  - '*.la'
+modules:
+  # mpv přehrává streamy; DI Player ho spouští jako samostatný proces (IPC socket).
+  # ffmpeg je v runtime (AAC/MP3 doplní rozšíření codecs-extra).
+  - name: libass
+    config-opts:
+      - --disable-static
+    sources:
+      - type: archive
+        url: https://github.com/libass/libass/releases/download/0.17.5/libass-0.17.5.tar.xz
+        sha256: 2dca25c0e0c837ddf00b52011b3f82cac1e4ddd3ad018227806b0c2288864acc
+
+  - name: libplacebo
+    buildsystem: meson
+    config-opts:
+      - -Dvulkan=disabled
+      - -Dopengl=disabled
+      - -Dd3d11=disabled
+      - -Dglslang=disabled
+      - -Dshaderc=disabled
+      - -Dlcms=disabled
+      - -Ddovi=disabled
+      - -Dlibdovi=disabled
+      - -Ddemos=false
+      - -Dtests=false
+    sources:
+      - type: git
+        url: https://github.com/haasn/libplacebo.git
+        tag: v7.387.0
+        commit: 275f7dea27924cdd34ab2e6c20e448b6bc4fab65
+
+  - name: mpv
+    buildsystem: meson
+    config-opts:
+      - -Dlibmpv=false
+      - -Dcplayer=true
+      - -Dlua=disabled
+      - -Djavascript=disabled
+      - -Dmanpage-build=disabled
+      - -Dhtml-build=disabled
+      - -Dpdf-build=disabled
+      - -Dgl=disabled
+      - -Dvulkan=disabled
+      - -Dwayland=disabled
+      - -Dx11=disabled
+      - -Ddrm=disabled
+      - -Dvaapi=disabled
+      - -Degl=disabled
+      - -Dcdda=disabled
+      - -Ddvdnav=disabled
+      - -Dlibbluray=disabled
+      - -Dpulse=enabled
+      - -Dpipewire=enabled
+    sources:
+      - type: git
+        url: https://github.com/mpv-player/mpv.git
+        tag: v0.42.0
+        commit: b0841e8c4d156b8403dc1876c4cbd9011eb583f3
+    post-install:
+      - rm -rf /app/share/applications /app/share/icons /app/share/zsh /app/share/bash-completion /app/share/fish /app/etc/mpv
+
+  - name: di-player
+    buildsystem: simple
+    build-options:
+      append-path: /usr/lib/sdk/rust-stable/bin
+      # Závislosti stahuje cargo při sestavení (jen místní build, ne Flathub).
+      build-args:
+        - --share=network
+      env:
+        CARGO_HOME: /run/build/di-player/cargo
+    build-commands:
+      - cargo build --release --locked
+      - install -Dm755 target/release/di_player /app/bin/di_player
+      - install -Dm644 data/com.alchymista.DiPlayer.desktop /app/share/applications/com.alchymista.DiPlayer.desktop
+      - install -Dm644 data/com.alchymista.DiPlayer.metainfo.xml /app/share/metainfo/com.alchymista.DiPlayer.metainfo.xml
+      - install -Dm644 resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg /app/share/icons/hicolor/scalable/apps/com.alchymista.DiPlayer.svg
+      - install -Dm644 resources/icons/hicolor/scalable/apps/com.alchymista.DiPlayer-symbolic.svg /app/share/icons/hicolor/symbolic/apps/com.alchymista.DiPlayer-symbolic.svg
+      - |
+        for png in resources/icons/hicolor/*x*/apps/com.alchymista.DiPlayer.png; do
+          size=$(basename "$(dirname "$(dirname "$png")")")
+          install -Dm644 "$png" /app/share/icons/hicolor/$size/apps/com.alchymista.DiPlayer.png
+        done
+    sources:
+      - type: dir
+        path: ../..
+        skip:
+          - target
+          - target-ubuntu
+          - dist
+          - site
+          - .git
+          - .flatpak-builder
