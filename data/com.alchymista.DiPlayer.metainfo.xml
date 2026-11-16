@@ -34,6 +34,11 @@
   <url type="bugtracker">https://github.com/Imbecile6197/di-player/issues</url>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="0.2.2" date="2026-11-16">
+      <description>
+        <p>DI Player shows up in the app overview with its icon again after switching from the old RPM, DEB or source install: the launcher those versions left behind now starts the Flatpak.</p>
+      </description>
+    </release>
     <release version="0.2.1" date="2026-11-16">
       <description>
         <p>DI Player is now distributed as a Flatpak. Channel covers load as small thumbnails, which fixes high memory use and slowness, starting playback no longer freezes the window, and the top bar icon shows again in GNOME 51.</p>

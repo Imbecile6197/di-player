@@ -3,6 +3,7 @@ pub mod config;
 pub mod cover_fx;
 pub mod i18n;
 pub mod icons;
+pub mod legacy;
 pub mod player;
 pub mod quality;
 pub mod theme;

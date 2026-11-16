@@ -1,6 +1,7 @@
 mod ui;
 
 use di_player::icons::{self, APP_ICON_NAME};
+use di_player::legacy;
 use gtk4::prelude::*;
 use libadwaita as adw;
 
@@ -9,6 +10,8 @@ const APP_ID: &str = "com.alchymista.DiPlayer";
 fn main() {
     // Write real icon files before GTK/tray start (fixes empty 0-byte installs).
     icons::install_user_icons();
+    // Flatpak: fix a launcher left behind by the old RPM/DEB/source builds.
+    legacy::repair_host_launcher();
 
     let app = adw::Application::builder().application_id(APP_ID).build();
 

@@ -23,6 +23,10 @@ finish-args:
   # Ne xdg-config/di-player – to by se připojilo i přes vlastní (zapisovatelnou)
   # konfiguraci aplikace v ~/.var/app a ukládání by selhalo.
   - --filesystem=~/.config/di-player:ro
+  # spouštěč, který si zapisovaly staré verze (Exec=di_player) a který zakrývá
+  # položku Flatpaku – aplikace ho přepíše (src/legacy.rs). Když neexistuje,
+  # oprávnění nic nezpřístupní.
+  - --filesystem=~/.local/share/applications/com.alchymista.DiPlayer.desktop
 cleanup:
   - /include
   - /lib/pkgconfig

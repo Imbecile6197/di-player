@@ -12,6 +12,9 @@ Or open https://imbecile6197.github.io/di-player/ and click **Install** (opens G
 Updates come through Software or `flatpak update`. Works on any distribution with Flatpak
 and Flathub (the GNOME runtime is pulled from Flathub).
 
+If this is the first Flatpak app installed for your user and DI Player does not show up in the
+app overview, log out and back in once (GNOME picks up the Flatpak app folder at login).
+
 ### Moving from the RPM/DEB packages
 
 The old dnf/apt repository is no longer updated. Install the Flatpak, then remove the package
@@ -22,7 +25,8 @@ sudo dnf remove di-player && sudo rm /etc/yum.repos.d/di-player.repo          # 
 sudo apt remove di-player && sudo rm /etc/apt/sources.list.d/di-player.list   # Ubuntu
 ```
 
-Your login and settings from `~/.config/di-player/` are copied into the Flatpak on first start.
+Your login and settings from `~/.config/di-player/` are copied into the Flatpak on first start, and the
+old launcher the previous versions wrote to `~/.local/share/applications/` is switched to the Flatpak.
 
 ## Build from source
 

@@ -89,9 +89,11 @@ cat > "$SITE/index.html" <<EOF
 <p>Otevře se v aplikaci Software. Nebo v terminálu:</p>
 <pre>flatpak install --user $BASE_URL/di-player.flatpakref</pre>
 <p>Aktualizace pak instaluje aplikace Software nebo příkaz <code>flatpak update</code>.</p>
+<p class="muted">Je-li to vaše první aplikace z Flatpaku a DI Player se v přehledu aplikací neobjeví, odhlaste se a znovu přihlaste.</p>
 <h2 lang="en">Installation</h2>
 <p lang="en">Click the button above to install with Software, or run the command in a terminal.
-Updates are installed by Software or by <code>flatpak update</code>.</p>
+Updates are installed by Software or by <code>flatpak update</code>.
+If it is your first Flatpak app and DI Player does not appear in the app overview, log out and back in once.</p>
 <p class="muted">Starší balíčky RPM/DEB (repozitáře <code>rpm/</code> a <code>deb/</code>) se už neaktualizují – přejděte prosím na flatpak.</p>
 <p class="muted">Vydání a licence: <a href="https://github.com/$PUBLIC_REPO">github.com/$PUBLIC_REPO</a></p>
 </body>
